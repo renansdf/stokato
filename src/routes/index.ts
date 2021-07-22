@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import budgetRouter from './budgetRouter';
-import base from './base';
+import contactRouter from './contactRouter';
+import baseRouter from './baseRouter';
 
 const routes = Router();
 
 routes.use('/budget', budgetRouter);
-routes.use('/', base);
+routes.use('/contact', contactRouter);
+routes.use('/', baseRouter);
 
 export default routes;
