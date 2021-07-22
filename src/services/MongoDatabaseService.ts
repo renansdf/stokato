@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import connection from '../helpers/connection';
 
 class MongoDatabaseService {
@@ -53,6 +53,27 @@ class MongoDatabaseService {
     }
 
     return data;
+  }
+
+  public async deleteById (id: string){
+    let response;
+
+    try{
+      const objId = new ObjectId(id);
+
+      await this.client.connect();
+  
+      const db = this.client.db(this.database);
+      const collection = db.collection(this.collection);
+
+      response = await collection.deleteOne({"_id": objId});
+    } catch(e) {
+      response = {error: e};
+    } finally {
+      await this.client.close();
+    }
+
+    return response;
   }
 }
 
