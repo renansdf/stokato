@@ -1,48 +1,21 @@
 import {Router, Request, Response} from 'express';
-import client from '../helpers/connection';
+import MongoDatabaseService from '../services/MongoDatabaseService';
 
 const budgetRouter = Router();
+const budgetData = new MongoDatabaseService('stokato','bugeto');
 
 budgetRouter.get('/', async (request: Request, response: Response) => {
-  const AllBudgets: any = [];
+  const data = await budgetData.getAll();
 
-  try{
-    await client.connect();
-
-    const db = client.db('bugetodb');
-    const stokato = db.collection('stokato');
-
-    const cursor = stokato.find();
-
-    await cursor.forEach((element) => {
-      AllBudgets.push(element);
-    });
-  } catch(e) {
-    console.log(e);
-  } finally {
-    await client.close();
-  }
-
-  return response.json(AllBudgets);
+  return response.json(data);
 });
 
 budgetRouter.post('/', async (request: Request, response: Response) => {
   const budget = request.body;
 
-  try{
-    await client.connect();
+  const data = await budgetData.create(budget);
 
-    const db = client.db('bugetodb');
-    const stokato = db.collection('stokato');
-
-    await stokato.insertOne(budget);
-  } catch(e) {
-    console.log(e);
-  } finally {
-    await client.close();
-  }
-
-  return response.json({message: 'check console'});
+  return response.json(data);
 });
 
 export default budgetRouter;
