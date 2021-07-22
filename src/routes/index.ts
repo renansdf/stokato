@@ -5,7 +5,7 @@ import baseRouter from './baseRouter';
 
 const routes = Router();
 
-routes.use('/budget', budgetRouter);
+routes.use('/quote', budgetRouter);
 routes.use('/contact', contactRouter);
 routes.use('/', baseRouter);
 
