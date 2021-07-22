@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import budgetRouter from './budgetRouter';
+import quoteRouter from './quoteRouter';
 import contactRouter from './contactRouter';
 import baseRouter from './baseRouter';
 
 const routes = Router();
 
-routes.use('/quote', budgetRouter);
+routes.use('/quote', quoteRouter);
 routes.use('/contact', contactRouter);
 routes.use('/', baseRouter);
 
