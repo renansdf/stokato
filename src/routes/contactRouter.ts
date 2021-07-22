@@ -18,4 +18,12 @@ contactRouter.post('/', async (request: Request, response: Response) => {
   return response.json(data);
 });
 
+contactRouter.delete('/', async (request: Request, response: Response) => {
+  const {id} = request.body;
+
+  const data = await contactData.deleteById(id);
+
+  return response.json(data);
+});
+
 export default contactRouter;
