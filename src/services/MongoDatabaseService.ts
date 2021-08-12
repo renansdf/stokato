@@ -12,14 +12,20 @@ class MongoDatabaseService {
     this.collection = collectionName;
   }
 
+  private async start (){
+    await this.client.connect();
+  
+    const db = this.client.db(this.database);
+    const collection = db.collection(this.collection);
+
+    return collection;
+  }
+
   public async create (object: Object) {
     let response;
 
     try{
-      await this.client.connect();
-  
-      const db = this.client.db(this.database);
-      const collection = db.collection(this.collection);
+      const collection = await this.start();
   
       await collection.insertOne(object);
       response = {success: 'object inserted into database'}
@@ -36,10 +42,7 @@ class MongoDatabaseService {
     let data: any = [];
 
     try{
-      await this.client.connect();
-  
-      const db = this.client.db(this.database);
-      const collection = db.collection(this.collection);
+      const collection = await this.start();
   
       const cursor = collection.find();
       
@@ -61,15 +64,52 @@ class MongoDatabaseService {
     try{
       const objId = new ObjectId(id);
 
-      await this.client.connect();
-  
-      const db = this.client.db(this.database);
-      const collection = db.collection(this.collection);
+      const collection = await this.start();
 
       response = await collection.deleteOne({"_id": objId});
     } catch(e) {
       response = {error: e};
     } finally {
+      await this.client.close();
+    }
+
+    return response;
+  }
+
+  public async getById (id: string){
+    let response;
+
+    try{
+      const collection = await this.start();
+  
+      const objId = new ObjectId(id);
+  
+      response = await collection.findOne({"_id": objId});
+    } catch(e) {
+      response = {error: e};
+    } finally{
+      await this.client.close();
+    }
+
+    return response;
+  }
+
+  public async updateSigno (id: string, encryptedSigno: string){
+    let response;
+    
+    try{
+      const collection = await this.start();
+      
+      const objId = new ObjectId(id);
+  
+      response = await collection.updateOne({"_id": objId}, {
+        $set:{
+          signo: encryptedSigno
+        }
+      });
+    } catch(e) {
+      response = {error: e};
+    } finally{
       await this.client.close();
     }
 
