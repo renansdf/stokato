@@ -13,7 +13,7 @@ quoteRouter.get('/', async (request: Request, response: Response) => {
 quoteRouter.post('/', async (request: Request, response: Response) => {
   const quote = request.body;
 
-  const data = await quoteData.create(quote);
+  const data = await quoteData.create({...quote, date: new Date});
 
   return response.json(data);
 });
